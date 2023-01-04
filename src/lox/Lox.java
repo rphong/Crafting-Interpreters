@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Lox {
-    static boolean hadError = false;z
+    static boolean hadError = false;
     public static void main(String[] args) throws IOException {
         if(args.length > 1) {
             System.out.println("HI");
