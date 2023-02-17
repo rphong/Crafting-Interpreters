@@ -5,7 +5,7 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
 
-public class GenerateAst {
+class GenerateAst {
     public static void main(String[] args) throws IOException {
         if(args.length != 1) {
             System.err.println("Usage: generate_ast <output directory>");
@@ -31,6 +31,8 @@ public class GenerateAst {
         writer.println();
         writer.println("abstract class " + baseName + " {");
 
+        defineVisitor(writer, baseName, types);
+
         //AST Classes
         for(String type: types) {
             String className = type.split(":")[0].trim();
@@ -38,11 +40,28 @@ public class GenerateAst {
             defineType(writer, baseName, className, fields);
         }
 
+        //Base accept() method
+        writer.println();
+        writer.println("    abstract <R> R accept(Visitor<R> visitor);");
+
         writer.println("}");
         writer.close();
     }
 
+    private static void defineVisitor(PrintWriter writer, String baseName, List<String> types) {
+        writer.println("    interface Visitor<R> {");
+
+        for(String type : types) {
+            String typeName = type.split(":")[0].trim();
+            writer.println("        R visit" + typeName + baseName + "(" +
+                typeName + " " + baseName.toLowerCase() + ");"); 
+        }
+
+        writer.println("    }");
+    }
+
     private static void defineType(PrintWriter writer, String baseName, String className, String fieldsList) {
+        writer.println();
         writer.println("    static class " + className + " extends " + baseName + "{");
 
         //Constructor
@@ -56,7 +75,15 @@ public class GenerateAst {
         }
         writer.println("        }");
 
+        //Visitor pattern
+        writer.println();
+        writer.println("        @Override");
+        writer.println("        <R> R accept(Visitor<R> visitor) {");
+        writer.println("            return visitor.visit" + className + baseName + "(this);");
+        writer.println("        }");
+
         //Fields
+        writer.println();
         for(String field : fields) {
             writer.println("        final " + field + ";");
         }
