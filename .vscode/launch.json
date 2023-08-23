@@ -21,6 +21,7 @@
             "type": "java",
             "name": "Launch Lox",
             "request": "launch",
+            "args": "src/testCode.txt",
             "mainClass": "lox.Lox",
             "projectName": "Crafting Interpreters_b6af310d"
         },
