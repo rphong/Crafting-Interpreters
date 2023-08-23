@@ -12,11 +12,12 @@ class Lox {
     private static final Interpreter interpreter = new Interpreter();
     static boolean hadError = false;
     static boolean hadRunTimeError = false;
+
     public static void main(String[] args) throws IOException {
-        if(args.length > 1) {
+        if (args.length > 1) {
             System.out.println("HI");
             System.exit(64);
-        } else if(args.length == 1) {
+        } else if (args.length == 1) {
             runFile(args[0]);
         } else {
             runPrompt();
@@ -26,20 +27,23 @@ class Lox {
     private static void runFile(String path) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         run(new String(bytes, Charset.defaultCharset()));
-        
-        //Indicate an error
-        if (hadError) System.exit(65);
-        if (hadRunTimeError) System.exit(70);
+
+        // Indicate an error
+        if (hadError)
+            System.exit(65);
+        if (hadRunTimeError)
+            System.exit(70);
     }
-    
+
     private static void runPrompt() throws IOException {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
 
-        for(;;) {
+        for (;;) {
             System.out.print("> ");
             String line = reader.readLine();
-            if(line == null) break;
+            if (line == null)
+                break;
             run(line);
             hadError = false;
         }
@@ -52,9 +56,14 @@ class Lox {
         Parser parser = new Parser(tokens);
         List<Stmt> statements = parser.parse();
 
-        //Syntax error
-        if(hadError) return;
+        // Syntax error
+        if (hadError)
+            return;
 
+        //Support for REPL
+        if (statements.size() == 1 && statements.get(0) instanceof Stmt.Expression) {
+            statements.add(new Stmt.Print(((Stmt.Expression) statements.get(0)).expression));
+        }
         interpreter.interpret(statements);
     }
 
@@ -68,7 +77,7 @@ class Lox {
     }
 
     static void error(Token token, String message) {
-        if(token.type == TokenType.EOF) {
+        if (token.type == TokenType.EOF) {
             report(token.line, " at end", message);
         } else {
             report(token.line, " at '" + token.lexeme + "'", message);

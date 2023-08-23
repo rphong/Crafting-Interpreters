@@ -88,15 +88,7 @@ public class Interpreter implements Expr.Visitor<Object>,
                     return (String) left + (String) right;
                 }
 
-                if (left instanceof String) {
-                    return (String) left + doubleToString(right);
-                }
-
-                if (right instanceof String) {
-                    return doubleToString(left) + (String) right;
-                }
-
-                throw new RuntimeError(expr.operator, "Operands must be two numbers or at least one must be a string");
+                throw new RuntimeError(expr.operator, "Operands must be of same type");
             case SLASH:
                 checkNumberOperands(expr.operator, left, right);
                 checkZeroDivisor(expr.operator, right);
@@ -154,14 +146,6 @@ public class Interpreter implements Expr.Visitor<Object>,
         }
 
         return object.toString();
-    }
-
-    private String doubleToString(Object object) {
-        String doubleString = String.valueOf(object);
-        if (doubleString.endsWith(".0")) {
-            doubleString = doubleString.substring(0, doubleString.length() - 2);
-        }
-        return doubleString;
     }
 
     private void checkNumberOperand(Token operator, Object operand) {
@@ -237,7 +221,7 @@ public class Interpreter implements Expr.Visitor<Object>,
             value = evaluate(stmt.initializer);
         }
 
-        environment.define(stmt.name.lexeme, value);
+        environment.define(stmt.name, value);
         return null;
     }
 

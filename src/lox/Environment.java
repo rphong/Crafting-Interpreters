@@ -41,7 +41,15 @@ class Environment {
             "Undefined variable '" + name.lexeme + "'.");
     }
 
-    void define(String name, Object value) {
-        values.put(name, value);
+    void define(Token name, Object value) {
+        try {
+            get(new Token(name.type, name.lexeme, value, name.line));
+        } catch(RuntimeError error) {
+            values.put(name.lexeme, value);
+            return;
+        }
+
+        throw new RuntimeError(name,
+            "Variable '" + name.lexeme + "' was already declared.");
     }
 }

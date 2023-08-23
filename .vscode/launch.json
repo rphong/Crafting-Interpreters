@@ -19,9 +19,16 @@
         },
         {
             "type": "java",
-            "name": "Launch Lox",
+            "name": "Launch Lox(File)",
             "request": "launch",
             "args": "src/testCode.txt",
+            "mainClass": "lox.Lox",
+            "projectName": "Crafting Interpreters_b6af310d"
+        },
+        {
+            "type": "java",
+            "name": "Launch Lox(REPL)",
+            "request": "launch",
             "mainClass": "lox.Lox",
             "projectName": "Crafting Interpreters_b6af310d"
         },
