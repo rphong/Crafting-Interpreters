@@ -60,9 +60,11 @@ class Lox {
         if (hadError)
             return;
 
-        //Support for REPL
+        // Support for REPL
         if (statements.size() == 1 && statements.get(0) instanceof Stmt.Expression) {
-            statements.add(new Stmt.Print(((Stmt.Expression) statements.get(0)).expression));
+            statements.add(
+                    new Stmt.Print(
+                            ((Stmt.Expression) statements.get(0)).expression));
         }
         interpreter.interpret(statements);
     }
